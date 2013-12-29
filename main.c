@@ -54,11 +54,6 @@ int main(int argc, char *argv[])
 {
 	int ret = 0;
 
-	if (!check_root()) {
-		fprintf(stderr, "dsngctl: must be run as root\n");
-		return 1;
-	}
-
 	if (argc < 2) {
 		print_usage(argv[0]);
 		return 1;
@@ -72,6 +67,11 @@ int main(int argc, char *argv[])
 	if (argc >= 2 && (strcmp(argv[1], "start") == 0)) {
 		if (argc < 3) {
 			fprintf(stderr, "dsngctl: invalid number of parameters for start command\n");
+			return 1;
+		}
+
+		if (!check_root()) {
+			fprintf(stderr, "dsngctl: start command must be run as root\n");
 			return 1;
 		}
 
