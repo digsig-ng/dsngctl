@@ -24,9 +24,7 @@
  */
 static int check_root()
 {
-	if (getuid() != 0)
-		return 1;
-	return 0;
+	return getuid() == 0;
 }
 
 /**
