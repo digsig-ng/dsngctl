@@ -32,7 +32,7 @@ static int check_root()
  */
 static void print_usage(char *name)
 {
-	printf("usage: %s [start|help]\n", name);
+	printf("usage: %s [start|status|help]\n", name);
 }
 
 /**
@@ -45,6 +45,9 @@ static void print_help(char *name)
 	printf("    %s start [pkey]\n", name);
 	printf("        Loads a private key to the kernel module.\n");
 	printf("        You can export a key with `gpg --export > pkey`\n");
+	printf("\n");
+	printf("    %s status\n", name);
+	printf("        Determines the current status of the module, whether it is loaded and running.\n");
 	printf("\n");
 	printf("    %s help\n", name);
 	printf("        Prints this message to standard output.\n");
@@ -76,6 +79,21 @@ int main(int argc, char *argv[])
 		}
 
 		ret = dsng_start(argv[2]);
+	}
+
+	if (argc >= 2 && (strcmp(argv[1], "status") == 0)) {
+		if (!check_root()) {
+			fprintf(stderr, "dsngctl: status command must be run as root\n");
+			return 1;
+		}
+
+		printf("dsngctl: digsig-ng status\n\t"
+			"module loaded:\t\t%s\n\t"
+			"module initialized:\t%s\n",
+			digsig_is_loaded() ? "loaded" : "not loaded",
+			digsig_is_initialized() ? "initialized" : "not initialized");
+
+		return 0;
 	}
 
 	return ret;

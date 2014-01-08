@@ -14,4 +14,8 @@
 
 int dsng_start(char *pkey_path);
 
+int digsig_is_loaded();
+
+int digsig_is_initialized();
+
 #endif /* DSNG_INTERFACE_H */

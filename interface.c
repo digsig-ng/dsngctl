@@ -12,8 +12,10 @@
 #include "interface.h"
 #include "extract.h"
 
+#include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 int dsng_start(char *pkey_path)
@@ -59,4 +61,55 @@ cleanup_pkey:
 	close(pkey_file);
 cleanup_done:
 	return ret;
+}
+
+int digsig_is_loaded()
+{
+	struct stat key_stat, revoke_stat;
+
+	if (stat("/sys/digsig/key", &key_stat) != 0) {
+		fprintf(stderr, "dsngctl: %s: could not stat /sys/digsig/key\n", __func__);
+		return 0;
+	}
+
+	if (stat("/sys/digsig/revoke", &revoke_stat) != 0) {
+		fprintf(stderr, "dsngctl: %s: could not stat /sys/digsig/revoke\n", __func__);
+		return 0;
+	}
+
+	return 1;
+}
+
+int digsig_is_initialized()
+{
+	int status_fd;
+	int rcount;
+	char status[8];
+
+	if (!digsig_is_loaded())
+		return 0;
+
+	status_fd = open("/sys/digsig/status", O_RDONLY);
+	if (status_fd < 0) {
+		fprintf(stderr, "dsngctl: %s: could not open /sys/digsig/status\n", __func__);
+		return 0;
+	}
+
+	rcount = read(status_fd, status, 8); /* reading 8 bytes, we won't need more */
+	if (rcount < 0) {
+		fprintf(stderr, "dsngctl: %s: could not read /sys/digsig/status\n", __func__);
+
+		close(status_fd);
+		return 0;
+	}
+
+	if (strncmp(status, "1", 1) == 0) {
+		close(status_fd);
+		return 1;
+	}
+
+	if (status_fd > 0)
+		close(status_fd);
+
+	return 0;
 }
