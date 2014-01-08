@@ -1,3 +1,2 @@
-* add status command to check the current status, currently loaded key, etc.
 * improve the argument parsing
 * add a manual page
