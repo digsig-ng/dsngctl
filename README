@@ -1,1 +1,34 @@
 dsngctl - Control utility for DigSig-ng (digsig-ng.org)
+=======================================================
+
+Introduction
+------------
+
+dsngctl is a userspace command line utility accompaning the DigSig-ng kernel
+module, as part of the DigSig-ng project hosted at digsig-ng.org.
+
+The purpose of the dsngctl command is to provide an easy frontend to issue
+commands to the kernel module.
+
+Getting Started
+---------------
+
+The `start` command is the most important command of the tool: it is
+responsible for loading GnuPG pubilc keys to the private module.
+
+Firstly, you need to export your GnuPG public key used for signing the system
+executables. This can be accomplished using the following command:
+
+    gpg --export >> my_public_key.pub
+
+You can then use the `dsngctl start` command to load the public key, as
+follows:
+
+    dsngctl start my_public_key.pub
+
+You may wish to write an init script appopriate to your Linux distribution to
+automatically load a key on boot.
+
+You can use the `dsngctl status` command to check the current status of the
+module: whether the module is present and whether a key has already been
+provided.
