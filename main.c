@@ -61,13 +61,11 @@ int main(int argc, char *argv[])
 		print_usage(argv[0]);
 		return 1;
 	}
-
-	if (argc >= 2 && (strcmp(argv[1], "help") == 0)) {
+	else if (argc >= 2 && (strcmp(argv[1], "help") == 0)) {
 		print_help(argv[0]);
 		return 0;
 	}
-
-	if (argc >= 2 && (strcmp(argv[1], "start") == 0)) {
+	else if (argc >= 2 && (strcmp(argv[1], "start") == 0)) {
 		if (argc < 3) {
 			fprintf(stderr, "dsngctl: invalid number of parameters for start command\n");
 			return 1;
@@ -80,8 +78,7 @@ int main(int argc, char *argv[])
 
 		ret = dsng_start(argv[2]);
 	}
-
-	if (argc >= 2 && (strcmp(argv[1], "status") == 0)) {
+	else if (argc >= 2 && (strcmp(argv[1], "status") == 0)) {
 		if (!check_root()) {
 			fprintf(stderr, "dsngctl: status command must be run as root\n");
 			return 1;
@@ -94,6 +91,9 @@ int main(int argc, char *argv[])
 			digsig_is_initialized() ? "initialized" : "not initialized");
 
 		return 0;
+	}
+	else {
+		fprintf(stderr, "dsngctl: unrecognized argument\n");
 	}
 
 	return ret;
